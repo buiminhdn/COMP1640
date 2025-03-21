@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Upload Document";
+}
+
+<div class="container mt-4">
+    <h1 class="fs-4 fw-bold">Upload Document</h1>
+
+    <form asp-action="Upload" asp-controller="Student" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label class="form-label">Document Name</label>
+            <input type="text" name="DocumentName" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Choose File</label>
+            <input type="file" name="file" class="form-control" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Upload</button>
+        <a href="@Url.Action("Document", "Student")" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

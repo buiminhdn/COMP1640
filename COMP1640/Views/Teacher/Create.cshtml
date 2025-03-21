@@ -1,0 +1,51 @@
+﻿@model COMP1640.Models.Meeting
+@{
+    ViewData["Title"] = "Create Meeting";
+    var students = ViewBag.Students as List<COMP1640.Models.ApplicationUser>;
+}
+
+<div class="container mt-4">
+    <h4>Create New Meeting</h4>
+    <form asp-action="Create" method="post">
+        <div class="mb-3">
+            <label class="form-label">Meeting Name</label>
+            <input asp-for="Name" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Select Student</label>
+            <select asp-for="StudentId" class="form-select" required>
+                <option value="">Select a student</option>
+                @foreach (var student in students)
+                {
+                    <option value="@student.Id">@student.FullName</option>
+                }
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Deadline</label>
+            <input asp-for="Deadline" type="datetime-local" class="form-control" required
+                   min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Meeting Link</label>
+            <div class="input-group">
+                <input asp-for="MeetingLink" id="meetingLinkInput" class="form-control" placeholder="Paste Google Meet link here" required />
+                <button type="button" class="btn btn-secondary" id="generateLinkBtn">Generate</button>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create Meeting</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById("generateLinkBtn").addEventListener("click", function () {
+        const meetUrl = "https://meet.google.com/new";
+
+        // Open Google Meet in a new tab
+        const newTab = window.open(meetUrl, "_blank");
+    });
+</script>
