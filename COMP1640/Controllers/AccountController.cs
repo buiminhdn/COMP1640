@@ -67,6 +67,14 @@ public class AccountController : Controller
             return View(model);
         }
 
+        // Kiểm tra xem email đã tồn tại hay chưa
+        var existingUser = await _userManager.FindByEmailAsync(model.Email);
+        if (existingUser != null)
+        {
+            ModelState.AddModelError("", "An account with this email already exists.");
+            return View(model);
+        }
+
         var user = new ApplicationUser
         {
             UserName = model.Email,
@@ -103,4 +111,6 @@ public class AccountController : Controller
         await _signInManager.SignOutAsync();
         return RedirectToAction("Login", "Account");
     }
+
+    public IActionResult AccessDenied() => View();
 }
