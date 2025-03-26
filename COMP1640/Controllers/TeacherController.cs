@@ -112,7 +112,7 @@ public class TeacherController : Controller
         {
             TutorId = teacher.Id,
             StudentId = model.StudentId,
-            Type = "Meeting Created",
+            Type = "just created a meeting",
             Timestamp = DateTime.UtcNow
         };
 
@@ -140,7 +140,7 @@ public class TeacherController : Controller
         {
             TutorId = meeting.TeacherId,
             StudentId = meeting.StudentId,
-            Type = "Meeting Recording Updated",
+            Type = "just updated meeting recording",
             Timestamp = DateTime.UtcNow
         };
 
@@ -229,7 +229,7 @@ public class TeacherController : Controller
         {
             TutorId = userId,
             StudentId = document.StudentId,
-            Type = "New Document Uploaded",
+            Type = "just commented on the document",
             Timestamp = DateTime.UtcNow
         };
 
@@ -311,7 +311,7 @@ public class TeacherController : Controller
         {
             TutorId = userId,
             StudentId = studentId,
-            Type = "New Document Uploaded",
+            Type = "just updated new document",
             Timestamp = DateTime.UtcNow
         };
 
@@ -353,7 +353,7 @@ public class TeacherController : Controller
             {
                 TutorId = userId,
                 StudentId = document.StudentId,
-                Type = $"Document {document.DocumentName} Deleted",
+                Type = $"just deleted document {document.DocumentName}",
                 Timestamp = DateTime.UtcNow
             };
 
