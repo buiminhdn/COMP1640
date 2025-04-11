@@ -1,5 +1,6 @@
 ﻿using COMP1640.Data;
 using COMP1640.Models;
+using COMP1640.Service;
 using COMP1640.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -11,15 +12,17 @@ namespace COMP1640.Controllers;
 [Authorize(Roles = "Teacher")]
 public class TeacherController : Controller
 {
+    private readonly IEmailService _emailService;
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IWebHostEnvironment _hostEnvironment;
 
-    public TeacherController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment hostEnvironment)
+    public TeacherController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment hostEnvironment, IEmailService emailService)
     {
         _context = context;
         _userManager = userManager;
         _hostEnvironment = hostEnvironment;
+        _emailService = emailService;
     }
 
     public IActionResult Index()
@@ -119,6 +122,19 @@ public class TeacherController : Controller
         _context.Interactions.Add(interaction);
 
         await _context.SaveChangesAsync();
+
+        // ✅ Send event notification email (no meeting details)
+        var student = await _context.Users.FindAsync(model.StudentId);
+        if (student != null && !string.IsNullOrEmpty(student.Email))
+        {
+            string subject = "You have a new meeting notification";
+            string body = $"Hi {student.FullName},<br><br>" +
+                          "Your personal tutor has scheduled a new meeting with you.<br>" +
+                          "Please <a href=\"https://your-etutoring-site.com\">log into the eTutoring system</a> to view the details.<br><br>" +
+                          "Thank you,<br>eTutoring System";
+
+            await _emailService.SendEmailAsync(student.Email, subject, body);
+        }
 
         return RedirectToAction("Index");
     }
@@ -318,6 +334,20 @@ public class TeacherController : Controller
         _context.Interactions.Add(interaction);
 
         await _context.SaveChangesAsync();
+
+        // ✅ Send email to student (notification only)
+        var student = await _context.Users.FindAsync(ownerId);
+        if (student != null && !string.IsNullOrEmpty(student.Email))
+        {
+            string subject = "New Document Uploaded";
+            string body = $"Hi {student.FullName},<br><br>" +
+                          "A new document has been uploaded to your eTutoring profile.<br>" +
+                          "Please <a href=\"https://your-etutoring-site.com\">log into the eTutoring system</a> to view it.<br><br>" +
+                          "Thank you,<br>eTutoring System";
+
+            await _emailService.SendEmailAsync(student.Email, subject, body);
+        }
+
 
         return RedirectToAction("Document");
     }

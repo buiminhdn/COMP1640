@@ -1,6 +1,7 @@
 ﻿using COMP1640.Data;
 using COMP1640.Hubs;
 using COMP1640.Models;
+using COMP1640.Service;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +29,8 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Account/Login";
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
+
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 // ✅ Add MVC (Controllers + Views)
 builder.Services.AddControllersWithViews();
